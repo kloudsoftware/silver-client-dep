@@ -1,0 +1,42 @@
+plugins {
+    id 'java'
+}
+
+group 'software.kloud'
+version '1.0'
+
+sourceCompatibility = 10
+
+
+apply plugin: 'java'
+apply plugin: 'maven'
+apply plugin: 'maven-publish'
+
+repositories {
+    mavenCentral()
+    mavenLocal()
+    maven {
+        url 'https://nexus.kloud.softwares/repository/maven-releases/'
+    }
+}
+
+dependencies {
+    testCompile group: 'junit', name: 'junit', version: '4.12'
+}
+
+uploadArchives {
+    repositories {
+        mavenDeployer {
+            repository(url: "https://nexus.kloud.software/repository/maven-releases/") {
+               authentication(userName: "${project.property('kloudnexus.user')}", password: "${project.property('kloudnexus.password')}")
+            }
+            pom.version = "$version"
+            pom.artifactId = "$rootProject.name"
+            pom.groupId = "software.kloud"
+        }
+    }
+}
+
+tasks.create("testProps").doLast {
+    println(this.properties)
+}
